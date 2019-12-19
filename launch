@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+orig_dir="$(pwd)"
+cd "${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+
+path="$(find . -name '*.gpg' | sed 's_\./\(.*\)\.gpg_\1_' | dmenu -i)"
+cd "$orig_dir"
+exec "$(dirname "$0")"/passtk.tcl "$path"

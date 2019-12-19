@@ -1,6 +1,14 @@
+#!/usr/bin/wish
 package require Tk
 
-wm title . "Pass"
+if { $argc != 1 } {
+  puts "No password given"
+  exit 1
+}
+
+set password [lindex $argv 0]
+
+wm title . "$password"
 grid [ttk::frame .c -padding "3 3 12 12"] -column 0 -row 0 -sticky news
 grid columnconfigure . 0 -weight 1
 grid rowconfigure . 0 -weight 1
@@ -10,12 +18,14 @@ set row 0
 set xclip [open "|xclip -o"]
 set inclip [read $xclip]
 close $xclip
-puts $inclip
 
-wm protocol . WM_DELETE_WINDOW {
-  clipboard $inclip
+proc cleanup {} {
+  clipboard $::inclip
   destroy .
 }
+
+wm protocol . WM_DELETE_WINDOW cleanup
+bind . <KeyPress-Escape> cleanup
 
 proc clipboard {value} {
   set xclip [open "|xclip" w]
@@ -23,7 +33,7 @@ proc clipboard {value} {
   close $xclip
 }
 
-set output [open "|pass show field-test"]
+set output [open |[list pass show $password]]
 while { [gets $output line] >= 0 } {
   if { $row == 0} {
     grid [
