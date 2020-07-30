@@ -37,14 +37,14 @@ set output [open |[list pass show $password]]
 while { [gets $output line] >= 0 } {
   if { $row == 0} {
     grid [
-      ttk::button .c.b$row -text "Password" -command "clipboard $line"
+      ttk::button .c.b$row -text "Password" -command [list clipboard $line]
       ] -column 0 -row $row -sticky e
     incr row
   } elseif {[set colon [string first ":" $line]] != -1} {
     set label [string trim [string range $line 0 [expr {$colon - 1}]]]
     set value [string trim [string range $line [expr {$colon + 1}] end]]
     grid [
-      ttk::button .c.b$row -text "$label" -command "clipboard $value"
+      ttk::button .c.b$row -text "$label" -command [list clipboard $value]
       ] -column 0 -row $row -sticky e
     incr row
   }
