@@ -1,0 +1,8 @@
+PassTK
+
+Quick and simple script that builds a GUI out of entries in the pass password manager.
+
+The GUI window floats over all other windows, and provides a button for each key/value pair found in the file.
+Each click puts the value of that field into the clipboard, and then when the window is closed it restores the clipboard to whatever was in it before the program started.
+
+Which entry is loaded is chosen by the launch script with dmenu.
