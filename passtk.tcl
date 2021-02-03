@@ -33,6 +33,13 @@ proc clipboard {value} {
   close $xclip
 }
 
+proc otp {name} {
+  set passotp [open [list "|pass" "otp" $name]]
+  set code [read -nonewline $passotp]
+  close $passotp
+  clipboard $code
+}
+
 set output [open |[list pass show $password]]
 while { [gets $output line] >= 0 } {
   if { $row == 0} {
@@ -43,8 +50,13 @@ while { [gets $output line] >= 0 } {
   } elseif {[set colon [string first ":" $line]] != -1} {
     set label [string trim [string range $line 0 [expr {$colon - 1}]]]
     set value [string trim [string range $line [expr {$colon + 1}] end]]
+    if {[string compare $label "otpauth"]} {
+      set command [list clipboard $value]
+    } else {
+      set command [list otp $password]
+    }
     grid [
-      ttk::button .c.b$row -text "$label" -command [list clipboard $value]
+      ttk::button .c.b$row -text "$label" -command $command
       ] -column 0 -row $row -sticky e
     incr row
   }
